@@ -23,7 +23,7 @@ public class LoginController {
     @RequestMapping("/login")
     public String Index(@CookieValue(value = "setUser", defaultValue = "") String setUser, Model model) {
         Cookie cookie = new Cookie("setUser", setUser);
-        model.addAttribute("cookieValue", cookie);
+        model.addAttribute("cookieValue", cookie.getValue());
         return "/login";
     }
 
@@ -37,26 +37,22 @@ public class LoginController {
             if (user.getEmail() != null)
                 setUser = user.getEmail();
 
-            // create cookie and set it in response
             Cookie cookie = new Cookie("setUser", setUser);
             cookie.setMaxAge(24 * 60 * 60);
             response.addCookie(cookie);
-
-            // get all cookies
             Cookie[] cookies = request.getCookies();
-            // iterate each cookie
             for (Cookie ck : cookies) {
                 // display only the cookie with the name 'setUser'
                 if (!ck.getName().equals("setUser")) {
                     ck.setValue("");
                 }
-                model.addAttribute("cookieValue", ck);
+                model.addAttribute("cookieValue", ck.getValue());
             }
             model.addAttribute("message", "Login success. Welcome!");
         } else {
             user.setEmail("");
             Cookie cookie = new Cookie("setUser", setUser);
-            model.addAttribute("cookieValue", cookie);
+            model.addAttribute("cookieValue", cookie.getValue());
             model.addAttribute("message", "Login failed. Try again.");
         }
         return "/login";
